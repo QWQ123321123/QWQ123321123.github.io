@@ -17,8 +17,14 @@
   border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
+/* 展开状态封面：圆形小唱片，与收起状态风格统一 */
 .aplayer.aplayer-fixed .aplayer-pic {
-  border-radius: 12px 0 0 12px !important;
+  border-radius: 50% !important;
+  margin: 8px 0 8px 8px !important;
+  width: 50px !important;
+  height: 50px !important;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 /* 收起状态：圆形悬浮小球 */
@@ -61,11 +67,11 @@
 }
 
 
-/* 展开状态的折叠条：半透明深色，悬停显现 */
+/* 展开状态的折叠条：默认隐藏，悬停显现 */
 .aplayer.aplayer-fixed:not(.aplayer-narrow) .aplayer-miniswitcher {
   background: rgba(0, 0, 0, 0.35) !important;
   border-radius: 0 18px 18px 0 !important;
-  opacity: 0.25;
+  opacity: 0;
   transition: opacity 0.25s ease;
 }
 
@@ -90,11 +96,12 @@
   cursor: grabbing;
 }
 
-/* 歌单列表：圆角毛玻璃 */
+/* 歌单列表：与播放器同宽对齐，圆角毛玻璃 */
 .aplayer.aplayer-fixed .aplayer-list {
   margin-bottom: 76px !important;
-  margin-left: 8px;
-  margin-right: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 400px;
   border: none !important;
   border-radius: 14px !important;
   overflow: hidden;
