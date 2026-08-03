@@ -1,12 +1,14 @@
 /* 首页横幅轮播：每 6 秒交叉淡入淡出切换 */
 (function () {
+  var OSS = 'https://myblogimage123.oss-cn-hongkong.aliyuncs.com/';
+  var PROC = '?x-oss-process=image/resize,w_1920/quality,q_85';
   var IMGS = [
-    '/images/banner.jpg',
-    '/images/banner2.jpg',
-    '/images/banner3.jpg',
-    '/images/banner4.jpg',
-    '/images/banner5.jpg',
-    '/images/banner6.png'
+    OSS + 'banner.jpg' + PROC,
+    OSS + 'banner2.jpg' + PROC,
+    OSS + 'banner3.jpg' + PROC,
+    OSS + 'banner4.jpg' + PROC,
+    OSS + 'banner5.jpg' + PROC,
+    OSS + 'banner6.png' + PROC
   ];
   var INTERVAL = 6000;
 
