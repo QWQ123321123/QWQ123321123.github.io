@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CICD 流水线笔记 | A Nobody's Blog</title><meta name="author" content="QWQ123321123"><meta name="copyright" content="QWQ123321123"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CICD 流水线文档git代码管理 jenkins docker或者k8s集群 对于CICD本身的理解： CI 与 CD 离不开jenkins这一组件，CI的过程即是通过Jenkins将代码从git拉取，构建，制作镜像交给测试人员 可以实现持续的集成，自动构建，测试 CD通过Jenkins将已经测试好的发行版本，拉取 构建 制作为镜像交给运维人员去部署 持续交付：交付给运维人员手动部署 持续部署：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CICD 流水线笔记">
+<meta property="og:url" content="https://qwq123321123.github.io/2026/08/03/cicd-pipeline-notes/index.html">
+<meta property="og:site_name" content="A Nobody&#39;s Blog">
+<meta property="og:description" content="CICD 流水线文档git代码管理 jenkins docker或者k8s集群 对于CICD本身的理解： CI 与 CD 离不开jenkins这一组件，CI的过程即是通过Jenkins将代码从git拉取，构建，制作镜像交给测试人员 可以实现持续的集成，自动构建，测试 CD通过Jenkins将已经测试好的发行版本，拉取 构建 制作为镜像交给运维人员去部署 持续交付：交付给运维人员手动部署 持续部署：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qwq123321123.github.io/images/head.jpg">
+<meta property="article:published_time" content="2026-08-03T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-03T08:45:39.278Z">
+<meta property="article:author" content="QWQ123321123">
+<meta property="article:tag" content="CICD">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qwq123321123.github.io/images/head.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CICD 流水线笔记",
+  "url": "https://qwq123321123.github.io/2026/08/03/cicd-pipeline-notes/",
+  "image": "https://qwq123321123.github.io/images/head.jpg",
+  "datePublished": "2026-08-03T04:00:00.000Z",
+  "dateModified": "2026-08-03T08:45:39.278Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QWQ123321123",
+      "url": "https://qwq123321123.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/images/head.jpg"><link rel="canonical" href="https://qwq123321123.github.io/2026/08/03/cicd-pipeline-notes/index.html"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><link rel="stylesheet" href="https://fonts.googleapis.cn/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CICD 流水线笔记',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/banner.css"><link rel="stylesheet" href="/css/player.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/images/background.jpg);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">A Nobody's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CICD 流水线笔记</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">CICD 流水线笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-03T08:45:39.278Z" title="更新于 2026-08-03 16:45:39">2026-08-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CICD-流水线文档"><a href="#CICD-流水线文档" class="headerlink" title="CICD 流水线文档"></a>CICD 流水线文档</h1><p>git代码管理</p>
+<p>jenkins</p>
+<p>docker或者k8s集群</p>
+<p>对于CICD本身的理解：</p>
+<p>CI 与 CD 离不开jenkins这一组件，CI的过程即是通过Jenkins将代码从git拉取，构建，制作镜像交给测试人员</p>
+<p>可以实现持续的集成，自动构建，测试</p>
+<p>CD通过Jenkins将已经测试好的发行版本，拉取 构建 制作为镜像交给运维人员去部署</p>
+<p>持续交付：交付给运维人员手动部署</p>
+<p>持续部署：自动化部署</p>
+<p>我的流程大致是这样的：</p>
+<p>GitLab (代码仓库) </p>
+<p>  ↓</p>
+<p>Jenkins (CI&#x2F;CD 服务器)</p>
+<p>  ↓</p>
+<p>Docker 镜像构建</p>
+<p>  ↓</p>
+<p>目标服务器部署</p>
+<h2 id="Git，Github，Gitlab的区别"><a href="#Git，Github，Gitlab的区别" class="headerlink" title="Git，Github，Gitlab的区别"></a>Git，Github，Gitlab的区别</h2><p>Git是一个开源的分布式版本控制系统。用于处理或小或大的项目</p>
+<p>Github是基于git的在线代码托管服务。Gitlab也是，只是由不同人开发</p>
+<h2 id="部署git服务"><a href="#部署git服务" class="headerlink" title="部署git服务"></a>部署git服务</h2><p>准备一台机器 内存最好10G起步</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用docker安装gitlab，国内大部分加速地址都没了，代理docker的网络来拉取镜像，网上有文档</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">首先创建好数据卷存放的目录 在usr/local/创建docker目录 在docker目录中创建gitlab_docker</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进入gitlab_docker目录，编写docker-compose.yml(去找模板)</span></span><br><span class="line">services:</span><br><span class="line">  gitlab:</span><br><span class="line">    image: &#x27;gitlab/gitlab-ce:latest&#x27;</span><br><span class="line">    container_name: gitlab</span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      GITLAB_OMNIBUS_CONFIG: |</span><br><span class="line">        external_url &#x27;http://192.168.100.121:8929&#x27;</span><br><span class="line">        gitlab_rails[&#x27;gitlab_shell_ssh_port&#x27;] = 2224</span><br><span class="line">    ports:</span><br><span class="line">      - &#x27;8929:8929&#x27;</span><br><span class="line">      - &#x27;2224:2224&#x27;</span><br><span class="line">    volumes:</span><br><span class="line">      - &#x27;./config:/etc/gitlab&#x27;</span><br><span class="line">      - &#x27;./logs:/var/log/gitlab&#x27;</span><br><span class="line">      - &#x27;./data:/var/opt/gitlab&#x27;</span><br><span class="line"></span><br><span class="line">docker pull gitlab/gitlab-ce:latest</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">等待拉取完成</span></span><br><span class="line"></span><br><span class="line">docker-compose up -d # 启动服务</span><br><span class="line"></span><br><span class="line">docker-compose logs -f #查看日志来确认启动成功 如果遇到权限问题 给data加权限</span><br></pre></td></tr></table></figure>
+
+<p>浏览器访问服务的映射端口，默认的管理员密码在输出日志中可以查看。</p>
+<h2 id="部署Jenkins"><a href="#部署Jenkins" class="headerlink" title="部署Jenkins"></a>部署Jenkins</h2><p>也准备一台内存较大的机器，通过docker部署Jenkins</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">首先创建好数据卷存放的目录 在usr/local/创建docker目录 在docker目录中创建jenkins_docker</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">编写docker-compose文件</span></span><br><span class="line">services:</span><br><span class="line">  jenkins:</span><br><span class="line">    image: jenkins/jenkins:lts</span><br><span class="line">    container_name: jenkins</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:8080&quot;</span><br><span class="line">      - &quot;50000:50000&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - ./data/:/var/jenkins_home/</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock  # 重要：允许容器内使用 Docker</span><br><span class="line">      - /etc/docker/daemon.json:/etc/docker/daemon.json #同时使用宿主机的daemon.json中的配置</span><br><span class="line">    user: root</span><br></pre></td></tr></table></figure>
+
+<p><strong>***<em><strong>关键配置说明：</strong></em>***</strong></p>
+<p>- 挂载 Docker socket (<code>/var/run/docker.sock</code>) 使 Jenkins 容器可以使用宿主机 Docker（用以构建镜像）</p>
+<p>主要就是将宿主机的某些目录映射到容器内部 和端口映射一个道理</p>
+<p>- 设置 <code>user: root</code> 获取必要权限</p>
+<h3 id="在Jenkins容器内安装docker客户端"><a href="#在Jenkins容器内安装docker客户端" class="headerlink" title="在Jenkins容器内安装docker客户端"></a>在Jenkins容器内安装docker客户端</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入 Jenkins 容器</span></span><br><span class="line">docker exec -it jenkins bash</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装 Docker 客户端</span></span><br><span class="line">apt-get update</span><br><span class="line">apt-get install -y docker.io</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">验证安装</span></span><br><span class="line">docker --version</span><br><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<p>省略了maven的部署（主要应用于java项目）</p>
+<h3 id="对Jenkins进行配置"><a href="#对Jenkins进行配置" class="headerlink" title="对Jenkins进行配置"></a>对Jenkins进行配置</h3><h3 id="1-首次登录和初始化"><a href="#1-首次登录和初始化" class="headerlink" title="1. 首次登录和初始化"></a>1. 首次登录和初始化</h3><h4 id="1-1-获取初始管理员密码"><a href="#1-1-获取初始管理员密码" class="headerlink" title="1.1 获取初始管理员密码"></a>1.1 获取初始管理员密码</h4><p>Jenkins 首次启动后，需要获取初始管理员密码：</p>
+<p><strong>方法1：在容器内查看</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> jenkins <span class="built_in">cat</span> /var/jenkins_home/secrets/initialAdminPassword</span><br></pre></td></tr></table></figure>
+
+<p><strong>方法2：在宿主机查看</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/local/docker/jenkins_docker</span><br><span class="line"><span class="built_in">cat</span> data/secrets/initialAdminPassword</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-完成初始化向导"><a href="#1-2-完成初始化向导" class="headerlink" title="1.2 完成初始化向导"></a>1.2 完成初始化向导</h4><ol>
+<li>访问 Jenkins：<code>http://192.168.100.122:8080</code></li>
+<li>输入初始管理员密码</li>
+<li>选择 <strong>安装推荐的插件</strong> 或 <strong>选择插件来安装</strong></li>
+<li>等待插件安装完成</li>
+<li>创建管理员账户（或使用默认的 admin 账户）</li>
+</ol>
+<h3 id="2-安装必要插件"><a href="#2-安装必要插件" class="headerlink" title="2. 安装必要插件"></a>2. 安装必要插件</h3><h4 id="2-1-必须安装的插件"><a href="#2-1-必须安装的插件" class="headerlink" title="2.1 必须安装的插件"></a>2.1 必须安装的插件</h4><ol>
+<li><strong>Pipeline</strong> - Pipeline 支持（通常已包含在推荐插件中）</li>
+<li><strong>Git</strong> - Git 版本控制支持</li>
+<li><strong>Docker Pipeline</strong> - Docker 流水线支持（可选）</li>
+</ol>
+<h4 id="2-2-安装插件步骤"><a href="#2-2-安装插件步骤" class="headerlink" title="2.2 安装插件步骤"></a>2.2 安装插件步骤</h4><ol>
+<li><strong>Jenkins → 系统管理 → 插件管理</strong></li>
+<li>点击 <strong>可选插件</strong> 标签</li>
+<li>搜索需要的插件</li>
+<li>勾选插件，点击 <strong>Install without restart</strong> 或 <strong>Download now and install after restart</strong></li>
+<li>等待安装完成</li>
+</ol>
+<h4 id="2-3-如果插件安装失败"><a href="#2-3-如果插件安装失败" class="headerlink" title="2.3 如果插件安装失败"></a>2.3 如果插件安装失败</h4><p><strong>问题：插件版本不兼容</strong></p>
+<ul>
+<li>确保 Jenkins 版本足够新（推荐 2.440+ LTS）</li>
+<li>检查插件要求的 Jenkins 最低版本</li>
+</ul>
+<p><strong>问题：插件下载失败</strong></p>
+<ul>
+<li>配置 Jenkins 使用国内镜像源（见下方配置）</li>
+</ul>
+<h3 id="3-配置-Jenkins-更新中心镜像源"><a href="#3-配置-Jenkins-更新中心镜像源" class="headerlink" title="3. 配置 Jenkins 更新中心镜像源"></a>3. 配置 Jenkins 更新中心镜像源</h3><h4 id="3-1-修改更新中心配置"><a href="#3-1-修改更新中心配置" class="headerlink" title="3.1 修改更新中心配置"></a>3.1 修改更新中心配置</h4><ol>
+<li><strong>Jenkins → 系统管理 → 插件管理 → 高级</strong></li>
+<li>找到 <strong>更新站点</strong> 部分</li>
+<li>将默认 URL 替换为国内镜像：</li>
+</ol>
+<p><strong>清华大学镜像：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</span><br></pre></td></tr></table></figure>
+
+<p><strong>或者直接修改配置文件：</strong></p>
+<p>在 Jenkins 容器内或宿主机上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入 Jenkins 容器</span></span><br><span class="line">docker <span class="built_in">exec</span> -it jenkins bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑更新中心配置</span></span><br><span class="line">vi /var/jenkins_home/hudson.model.UpdateCenter.xml</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&#x27;1.1&#x27; encoding=&#x27;UTF-8&#x27;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">sites</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">site</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>default<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">site</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">sites</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>重启 Jenkins：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart jenkins</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-配置系统设置"><a href="#4-配置系统设置" class="headerlink" title="4. 配置系统设置"></a>4. 配置系统设置</h3><h4 id="4-1-系统配置"><a href="#4-1-系统配置" class="headerlink" title="4.1 系统配置"></a>4.1 系统配置</h4><ol>
+<li><strong>Jenkins → 系统管理 → 系统配置</strong></li>
+<li>重要配置项：<ul>
+<li><strong>Jenkins URL</strong>: <code>http://192.168.100.122:8080</code></li>
+<li><strong>执行者数量</strong>: 根据服务器性能设置（建议 2-4）</li>
+<li><strong>工作空间目录</strong>: 默认即可</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-2-全局工具配置"><a href="#4-2-全局工具配置" class="headerlink" title="4.2 全局工具配置"></a>4.2 全局工具配置</h4><ol>
+<li><p><strong>Jenkins → 系统管理 → 全局工具配置</strong></p>
+</li>
+<li><p><strong>Git 配置</strong>：</p>
+<ul>
+<li><strong>Name</strong>: <code>Default</code></li>
+<li><strong>Path to Git executable</strong>: 通常自动检测，或填写 <code>/usr/bin/git</code></li>
+</ul>
+</li>
+<li><p><strong>Docker 配置</strong>（如果使用 Docker 工具）：</p>
+<ul>
+<li><strong>Name</strong>: <code>Docker</code></li>
+<li><strong>Docker installation</strong>: 选择 <strong>Install automatically</strong> 或指定路径</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-配置凭据管理"><a href="#5-配置凭据管理" class="headerlink" title="5. 配置凭据管理"></a>5. 配置凭据管理</h3><h4 id="5-1-添加-GitLab-凭据"><a href="#5-1-添加-GitLab-凭据" class="headerlink" title="5.1 添加 GitLab 凭据"></a>5.1 添加 GitLab 凭据</h4><ol>
+<li><strong>Jenkins → 系统管理 → 凭据管理 → 系统 → 全局凭据 → 添加凭据</strong></li>
+<li>配置 GitLab 凭据：<ul>
+<li><strong>Kind</strong>: Username with password</li>
+<li><strong>Scope</strong>: Global</li>
+<li><strong>Username</strong>: <code>Administrator</code>（或 <code>root</code>）</li>
+<li><strong>Password</strong>: GitLab 密码</li>
+<li><strong>ID</strong>: <code>gitlab-admin</code>（记住这个 ID，Pipeline 中会用到）</li>
+<li><strong>Description</strong>: <code>GitLab Administrator Account</code></li>
+</ul>
+</li>
+<li>点击 <strong>确定</strong></li>
+</ol>
+<h4 id="5-2-添加-SSH-凭据（可选）"><a href="#5-2-添加-SSH-凭据（可选）" class="headerlink" title="5.2 添加 SSH 凭据（可选）"></a>5.2 添加 SSH 凭据（可选）</h4><p>如果需要 SSH 方式连接服务器：</p>
+<ol>
+<li><strong>添加凭据</strong></li>
+<li>配置：<ul>
+<li><strong>Kind</strong>: SSH Username with private key</li>
+<li><strong>Username</strong>: <code>root</code></li>
+<li><strong>Private Key</strong>: 选择 <strong>Enter directly</strong>，粘贴私钥内容</li>
+<li><strong>ID</strong>: <code>target-server-ssh</code></li>
+<li><strong>Description</strong>: <code>Target Server SSH Key</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="进行cicd的操作："><a href="#进行cicd的操作：" class="headerlink" title="进行cicd的操作："></a>进行cicd的操作：</h2><h5 id="1-创建-Pipeline-任务"><a href="#1-创建-Pipeline-任务" class="headerlink" title="1. 创建 Pipeline 任务"></a>1. 创建 Pipeline 任务</h5><ol>
+<li>在 Jenkins 中点击 <strong>新建任务</strong></li>
+<li>输入任务名称：<code>mytest-pipeline</code></li>
+<li>选择 <strong>流水线</strong>（Pipeline）</li>
+<li>点击 <strong>确定</strong></li>
+</ol>
+<h6 id="2-配置源码管理"><a href="#2-配置源码管理" class="headerlink" title="2. 配置源码管理"></a>2. 配置源码管理</h6><p>在 Pipeline 配置中：</p>
+<ul>
+<li><strong>Definition</strong>: 选择 <strong>Pipeline script</strong>（或 Pipeline script from SCM）</li>
+<li>如果使用 SCM，配置：<ul>
+<li><strong>SCM</strong>: Git</li>
+<li><strong>Repository URL</strong>: <code>http://192.168.100.121:8929/root/mytest.git</code></li>
+<li><strong>Credentials</strong>: 选择 GitLab 凭据</li>
+<li><strong>Branches to build</strong>: <code>*/master</code></li>
+</ul>
+</li>
+</ul>
+<h6 id="3-配置-Git-凭据"><a href="#3-配置-Git-凭据" class="headerlink" title="3. 配置 Git 凭据"></a>3. 配置 Git 凭据</h6><ol>
+<li><strong>Jenkins → 系统管理 → 凭据管理 → 系统 → 全局凭据 → 添加凭据</strong></li>
+<li>配置：<ul>
+<li><strong>Kind</strong>: Username with password</li>
+<li><strong>Username</strong>: <code>Administrator</code> 或 <code>root</code></li>
+<li><strong>Password</strong>: GitLab 密码</li>
+<li><strong>ID</strong>: <code>gitlab-admin</code></li>
+<li><strong>Description</strong>: <code>GitLab Administrator</code></li>
+</ul>
+</li>
+</ol>
+<h6 id="4-配置-SSH-免密登录"><a href="#4-配置-SSH-免密登录" class="headerlink" title="4. 配置 SSH 免密登录"></a>4. 配置 SSH 免密登录</h6><h6 id="4-1-在-Jenkins-容器内生成-SSH-密钥"><a href="#4-1-在-Jenkins-容器内生成-SSH-密钥" class="headerlink" title="4.1 在 Jenkins 容器内生成 SSH 密钥"></a>4.1 在 Jenkins 容器内生成 SSH 密钥</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it jenkins bash</span><br><span class="line">ssh-keygen -t rsa -b 4096</span><br><span class="line"><span class="comment"># 按回车使用默认设置</span></span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<h6 id="4-2-将公钥添加到目标服务器"><a href="#4-2-将公钥添加到目标服务器" class="headerlink" title="4.2 将公钥添加到目标服务器"></a>4.2 将公钥添加到目标服务器</h6><p>在目标服务器上执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/.ssh</span><br><span class="line"><span class="built_in">chmod</span> 700 ~/.ssh</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Jenkins的公钥内容&quot;</span> &gt;&gt; ~/.ssh/authorized_keys</span><br><span class="line"><span class="built_in">chmod</span> 600 ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<h6 id="4-3-测试-SSH-连接"><a href="#4-3-测试-SSH-连接" class="headerlink" title="4.3 测试 SSH 连接"></a>4.3 测试 SSH 连接</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 Jenkins 容器内</span></span><br><span class="line">ssh root@192.168.100.122</span><br><span class="line"><span class="comment"># 应该能无密码登录</span></span><br></pre></td></tr></table></figure>
+
+<p>为了能够编写以及维护 需要学习shell脚本编写和pipeline的一些语法</p>
+<p>以下是一个简单流程的pipeline脚本示例：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    </span><br><span class="line">    environment &#123;</span><br><span class="line">        TARGET_SERVER = <span class="string">&#x27;192.168.100.122&#x27;</span></span><br><span class="line">        TARGET_USER = <span class="string">&#x27;root&#x27;</span></span><br><span class="line">        TARGET_PATH = <span class="string">&#x27;/opt/mytest&#x27;</span></span><br><span class="line">        IMAGE_NAME = <span class="string">&#x27;mytest:latest&#x27;</span></span><br><span class="line">        GIT_URL = <span class="string">&#x27;http://192.168.100.121:8929/root/mytest.git&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">&#x27;拉取代码&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                script &#123;</span><br><span class="line">                    sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                        echo &quot;========== 拉取代码 ==========&quot;</span></span><br><span class="line"><span class="string">                        if [ -d &quot;.git&quot; ]; then</span></span><br><span class="line"><span class="string">                            echo &quot;Git 仓库已存在，更新代码...&quot;</span></span><br><span class="line"><span class="string">                            git pull origin master</span></span><br><span class="line"><span class="string">                        else</span></span><br><span class="line"><span class="string">                            echo &quot;克隆代码仓库...&quot;</span></span><br><span class="line"><span class="string">                            git clone $&#123;GIT_URL&#125; .</span></span><br><span class="line"><span class="string">                        fi</span></span><br><span class="line"><span class="string">                        echo &quot;代码拉取完成&quot;</span></span><br><span class="line"><span class="string">                    &#x27;&#x27;&#x27;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        stage(<span class="string">&#x27;构建 Docker 镜像&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                script &#123;</span><br><span class="line">                    sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                        echo &quot;========== 开始构建 Docker 镜像 ==========&quot;</span></span><br><span class="line"><span class="string">                        docker build -t $&#123;IMAGE_NAME&#125; .</span></span><br><span class="line"><span class="string">                        if [ $? -ne 0 ]; then</span></span><br><span class="line"><span class="string">                            echo &quot;Docker 镜像构建失败！&quot;</span></span><br><span class="line"><span class="string">                            exit 1</span></span><br><span class="line"><span class="string">                        fi</span></span><br><span class="line"><span class="string">                        echo &quot;========== 保存镜像文件 ==========&quot;</span></span><br><span class="line"><span class="string">                        docker save $&#123;IMAGE_NAME&#125; -o mytest.tar</span></span><br><span class="line"><span class="string">                        ls -lh mytest.tar</span></span><br><span class="line"><span class="string">                    &#x27;&#x27;&#x27;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        stage(<span class="string">&#x27;推送到目标服务器&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                script &#123;</span><br><span class="line">                    sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                        echo &quot;========== 推送到目标服务器 ==========&quot;</span></span><br><span class="line"><span class="string">                        # 创建目录</span></span><br><span class="line"><span class="string">                        ssh -o StrictHostKeyChecking=no $&#123;TARGET_USER&#125;@$&#123;TARGET_SERVER&#125; &quot;mkdir -p $&#123;TARGET_PATH&#125; &amp;&amp; chmod 755 $&#123;TARGET_PATH&#125;&quot;</span></span><br><span class="line"><span class="string">                        </span></span><br><span class="line"><span class="string">                        # 推送文件</span></span><br><span class="line"><span class="string">                        scp -o StrictHostKeyChecking=no mytest.tar $&#123;TARGET_USER&#125;@$&#123;TARGET_SERVER&#125;:$&#123;TARGET_PATH&#125;/</span></span><br><span class="line"><span class="string">                        </span></span><br><span class="line"><span class="string">                        if [ $? -ne 0 ]; then</span></span><br><span class="line"><span class="string">                            echo &quot;文件推送失败！&quot;</span></span><br><span class="line"><span class="string">                            exit 1</span></span><br><span class="line"><span class="string">                        fi</span></span><br><span class="line"><span class="string">                        </span></span><br><span class="line"><span class="string">                        echo &quot;========== 在目标服务器上部署 ==========&quot;</span></span><br><span class="line"><span class="string">                        # 使用 8081:8080 端口映射，避免与 Jenkins 的 8080 冲突</span></span><br><span class="line"><span class="string">                        ssh -o StrictHostKeyChecking=no $&#123;TARGET_USER&#125;@$&#123;TARGET_SERVER&#125; &quot;cd $&#123;TARGET_PATH&#125; &amp;&amp; docker load -i mytest.tar &amp;&amp; docker stop mytest 2&gt;/dev/null || true &amp;&amp; docker rm mytest 2&gt;/dev/null || true &amp;&amp; docker run -d --name mytest -p 8081:8080 --restart unless-stopped mytest:latest&quot;</span></span><br><span class="line"><span class="string">                        </span></span><br><span class="line"><span class="string">                        if [ $? -eq 0 ]; then</span></span><br><span class="line"><span class="string">                            echo &quot;========== 部署成功！ ==========&quot;</span></span><br><span class="line"><span class="string">                            echo &quot;Jenkins: http://$&#123;TARGET_SERVER&#125;:8080&quot;</span></span><br><span class="line"><span class="string">                            echo &quot;应用已部署到: http://$&#123;TARGET_SERVER&#125;:8081&quot;</span></span><br><span class="line"><span class="string">                        else</span></span><br><span class="line"><span class="string">                            echo &quot;========== 部署失败！ ==========&quot;</span></span><br><span class="line"><span class="string">                            exit 1</span></span><br><span class="line"><span class="string">                        fi</span></span><br><span class="line"><span class="string">                    &#x27;&#x27;&#x27;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    post &#123;</span><br><span class="line">        always &#123;</span><br><span class="line">            cleanWs()</span><br><span class="line">        &#125;</span><br><span class="line">        success &#123;</span><br><span class="line">            echo <span class="string">&#x27;构建成功！&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">        failure &#123;</span><br><span class="line">            echo <span class="string">&#x27;构建失败！&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以下是脚本的详解：</p>
+<p>它的核心功能是实现一个简单的 <strong>CI&#x2F;CD（持续集成&#x2F;持续部署）</strong> 流程：从 Git 拉取代码 -&gt; 在 Jenkins 节点构建 Docker 镜像 -&gt; 将镜像打包成文件 -&gt; 拷贝到另一台应用服务器 -&gt; 在应用服务器上重新部署运行。</p>
+<h3 id="1-头部定义与环境变量"><a href="#1-头部定义与环境变量" class="headerlink" title="1. 头部定义与环境变量"></a>1. 头部定义与环境变量</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any  <span class="comment">// 在任何可用的 Jenkins 节点（Slave/Master）上运行此任务</span></span><br><span class="line">    </span><br><span class="line">    environment &#123;</span><br><span class="line">        <span class="comment">// 目标应用服务器的 IP</span></span><br><span class="line">        TARGET_SERVER = <span class="string">&#x27;192.168.100.122&#x27;</span></span><br><span class="line">        <span class="comment">// 登录目标服务器的用户（这里用了 root，实际生产建议用普通用户）</span></span><br><span class="line">        TARGET_USER = <span class="string">&#x27;root&#x27;</span></span><br><span class="line">        <span class="comment">// 目标服务器上存放部署文件的路径</span></span><br><span class="line">        TARGET_PATH = <span class="string">&#x27;/opt/mytest&#x27;</span></span><br><span class="line">        <span class="comment">// 镜像的名字和标签</span></span><br><span class="line">        IMAGE_NAME = <span class="string">&#x27;mytest:latest&#x27;</span></span><br><span class="line">        <span class="comment">// Git 代码仓库地址</span></span><br><span class="line">        GIT_URL = <span class="string">&#x27;http://192.168.100.121:8929/root/mytest.git&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-第一阶段：拉取代码-Pull-Code"><a href="#2-第一阶段：拉取代码-Pull-Code" class="headerlink" title="2. 第一阶段：拉取代码 (Pull Code)"></a>2. 第一阶段：拉取代码 (Pull Code)</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">stage(<span class="string">&#x27;拉取代码&#x27;</span>) &#123;</span><br><span class="line">    steps &#123;</span><br><span class="line">        script &#123;</span><br><span class="line">            sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                # 1. 检查当前目录下是否已经有 .git 隐藏目录</span></span><br><span class="line"><span class="string">                if [ -d &quot;.git&quot; ]; then</span></span><br><span class="line"><span class="string">                    echo &quot;Git 仓库已存在，更新代码...&quot;</span></span><br><span class="line"><span class="string">                    # 如果有，说明以前跑过任务，只需要增量更新 (git pull)</span></span><br><span class="line"><span class="string">                    git pull origin master</span></span><br><span class="line"><span class="string">                else</span></span><br><span class="line"><span class="string">                    echo &quot;克隆代码仓库...&quot;</span></span><br><span class="line"><span class="string">                    # 如果没有，说明是第一次跑，需要全量下载 (git clone)</span></span><br><span class="line"><span class="string">                    git clone $&#123;GIT_URL&#125; .</span></span><br><span class="line"><span class="string">                fi</span></span><br><span class="line"><span class="string">            &#x27;&#x27;&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-第二阶段：构建-Docker-镜像-Build"><a href="#3-第二阶段：构建-Docker-镜像-Build" class="headerlink" title="3. 第二阶段：构建 Docker 镜像 (Build)"></a>3. 第二阶段：构建 Docker 镜像 (Build)</h3><p>这一步是在 <strong>Jenkins 所在的机器</strong> 上执行的。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">stage(<span class="string">&#x27;构建 Docker 镜像&#x27;</span>) &#123;</span><br><span class="line">    steps &#123;</span><br><span class="line">        script &#123;</span><br><span class="line">            sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                # 1. 执行 Docker 构建，利用当前目录下的 Dockerfile</span></span><br><span class="line"><span class="string">                docker build -t $&#123;IMAGE_NAME&#125; .</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 2. $? 是 Linux 上一个命令的退出码。0 代表成功，非 0 代表失败。</span></span><br><span class="line"><span class="string">                # 这是一个很好的错误处理习惯：构建失败立即退出，不往后跑。</span></span><br><span class="line"><span class="string">                if [ $? -ne 0 ]; then ... exit 1; fi</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 3. 核心步骤：将镜像保存为 tar 包</span></span><br><span class="line"><span class="string">                docker save $&#123;IMAGE_NAME&#125; -o mytest.tar</span></span><br><span class="line"><span class="string">            &#x27;&#x27;&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>为什么用 <code>docker save</code>？<ul>
+<li>标准做法通常是 <code>docker push</code> 推送到 Harbor 私有仓库。</li>
+<li>但这个脚本采用了 <strong>“离线传输”</strong> 模式：把它打包成 <code>mytest.tar</code> 文件。这样做的好处是不需要搭建 Docker 仓库，坏处是文件传输（scp）比镜像层同步（pull）要慢且占带宽。</li>
+</ul>
+</li>
+</ul>
+<h3 id="第三阶段：推送到目标服务器-Deploy"><a href="#第三阶段：推送到目标服务器-Deploy" class="headerlink" title=". 第三阶段：推送到目标服务器 (Deploy)"></a>. 第三阶段：推送到目标服务器 (Deploy)</h3><p>这一步是最复杂的，涉及跨服务器操作（从 Jenkins 机器 -&gt; 122 应用服务器）。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">stage(<span class="string">&#x27;推送到目标服务器&#x27;</span>) &#123;</span><br><span class="line">    steps &#123;</span><br><span class="line">        script &#123;</span><br><span class="line">            sh <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">                # 1. 远程创建目录</span></span><br><span class="line"><span class="string">                # -o StrictHostKeyChecking=no：这是关键参数！</span></span><br><span class="line"><span class="string">                # 作用：跳过 SSH 第一次连接时的 &quot;Are you sure...? (yes/no)&quot; 确认提示，否则自动化脚本会卡死。</span></span><br><span class="line"><span class="string">                ssh -o StrictHostKeyChecking=no $&#123;TARGET_USER&#125;@$&#123;TARGET_SERVER&#125; &quot;mkdir -p $&#123;TARGET_PATH&#125; &amp;&amp; chmod 755 $&#123;TARGET_PATH&#125;&quot;</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 2. 将构建好的 tar 包发送过去 (SCP)</span></span><br><span class="line"><span class="string">                scp -o StrictHostKeyChecking=no mytest.tar $&#123;TARGET_USER&#125;@$&#123;TARGET_SERVER&#125;:$&#123;TARGET_PATH&#125;/</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 3. 远程执行部署命令（长指令解析）</span></span><br><span class="line"><span class="string">                ssh ... &quot;cd $&#123;TARGET_PATH&#125; &amp;&amp; \</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 加载镜像文件到目标机的 Docker</span></span><br><span class="line"><span class="string">                docker load -i mytest.tar &amp;&amp; \</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 停止旧容器。注意后面的 &quot;|| true&quot;</span></span><br><span class="line"><span class="string">                # 含义：如果容器原本不存在，stop 会报错，但加了 || true 后，即使报错也强行视为成功。</span></span><br><span class="line"><span class="string">                # 这样防止第一次部署时因为没有旧容器而导致流水线中断。</span></span><br><span class="line"><span class="string">                docker stop mytest 2&gt;/dev/null || true &amp;&amp; \</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 删除旧容器，逻辑同上</span></span><br><span class="line"><span class="string">                docker rm mytest 2&gt;/dev/null || true &amp;&amp; \</span></span><br><span class="line"><span class="string">                </span></span><br><span class="line"><span class="string">                # 启动新容器</span></span><br><span class="line"><span class="string">                # -d: 后台运行</span></span><br><span class="line"><span class="string">                # -p 8081:8080: 宿主机8081映射到容器8080</span></span><br><span class="line"><span class="string">                # --restart unless-stopped: 如果服务器重启，容器也会自动重启</span></span><br><span class="line"><span class="string">                docker run -d --name mytest -p 8081:8080 --restart unless-stopped mytest:latest&quot;</span></span><br><span class="line"><span class="string">            &#x27;&#x27;&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-结束处理-Post"><a href="#5-结束处理-Post" class="headerlink" title="5. 结束处理 (Post)"></a>5. 结束处理 (Post)</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">post &#123;</span><br><span class="line">    always &#123;</span><br><span class="line">        <span class="comment">// 清理工作空间。</span></span><br><span class="line">        <span class="comment">// 非常重要！如果不清理，Jenkins 服务器的磁盘很快就会被旧源码和 tar 包填满。</span></span><br><span class="line">        cleanWs()</span><br><span class="line">    &#125;</span><br><span class="line">    success &#123; echo <span class="string">&#x27;构建成功！&#x27;</span> &#125;</span><br><span class="line">    failure &#123; echo <span class="string">&#x27;构建失败！&#x27;</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这个 Pipeline 的核心流程是：</p>
+<ol>
+<li><strong>代码</strong>：Git 拉取。</li>
+<li><strong>产物</strong>：构建镜像 -&gt; 打包成 <code>.tar</code> 文件。</li>
+<li><strong>传输</strong>：通过 <code>scp</code> 将打包好的大文件传给目标机。</li>
+<li><strong>运行</strong>：目标机 SSH 远程执行 <code>docker load</code> -&gt; <code>docker run</code>。</li>
+</ol>
+<p><strong>注意事项：</strong><br>要让这个脚本跑通，前提是 <strong>Jenkins 服务器必须配置了到目标服务器（192.168.100.122）的 SSH 免密登录</strong>（即把 Jenkins 的公钥放到了目标机的 <code>authorized_keys</code> 里），否则脚本会在 SSH&#x2F;SCP 那一步因需要输入密码而失败。</p>
+<p>接下来搭建私有仓库改变镜像的传输模式。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qwq123321123.github.io">QWQ123321123</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qwq123321123.github.io/2026/08/03/cicd-pipeline-notes/">https://qwq123321123.github.io/2026/08/03/cicd-pipeline-notes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qwq123321123.github.io" target="_blank">A Nobody's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CICD/">CICD</a><a class="post-meta__tags" href="/tags/DevOps/">DevOps</a></div><div class="post-share"><div class="social-share" data-image="/images/head.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/03/k8s-deploy-seafile/" title="K8s 部署 Seafile"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">K8s 部署 Seafile</div></div><div class="info-2"><div class="info-item-1">组件架构123456789101112131415161718192021222324252627┌─────────────────────────────────────────────────────────┐│                    Kubernetes 集群                       ││                    (Namespace: seafile)                  │├─────────────────────────────────────────────────────────┤│                                                           ││  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ││  │   Seafile    │  │   MariaDB    │  │  Memcached   │  ││  │   (主应用)    │  │   (数据库)    │  ...</div></div></div></a><a class="pagination-related" href="/2026/08/03/docker-deploy-seafile/" title="Docker 部署 Seafile（个人详细版本）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Docker 部署 Seafile（个人详细版本）</div></div><div class="info-2"><div class="info-item-1">docker部署seafile（个人详细版本）1.首先安装docker与dockercompose在线安装或者离线安装都可以 离线安装docker要使其成为系统级的服务，需要手动编写配置文件才能用systemctl命令对其进行操作 1vim /etc/systemd/system/docker.service  创建并写入以下内容： 12345678910111213141516171819202122[Unit]Description=Docker Application Container EngineDocumentation=https://docs.docker.comAfter=network-online.target firewalld.serviceWants=network-online.target[Service]Type=notifyExecStart=/usr/bin/dockerd --selinux-enabled=false -H unix:///var/run/docker.sockExecReload=/bin/kill -s HUP $MA...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/images/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QWQ123321123</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/QWQ123321123"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CICD-%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%96%87%E6%A1%A3"><span class="toc-number">1.</span> <span class="toc-text">CICD 流水线文档</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git%EF%BC%8CGithub%EF%BC%8CGitlab%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">Git，Github，Gitlab的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2git%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.2.</span> <span class="toc-text">部署git服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2Jenkins"><span class="toc-number">1.3.</span> <span class="toc-text">部署Jenkins</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8Jenkins%E5%AE%B9%E5%99%A8%E5%86%85%E5%AE%89%E8%A3%85docker%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.3.1.</span> <span class="toc-text">在Jenkins容器内安装docker客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9Jenkins%E8%BF%9B%E8%A1%8C%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.2.</span> <span class="toc-text">对Jenkins进行配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%A6%96%E6%AC%A1%E7%99%BB%E5%BD%95%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.3.3.</span> <span class="toc-text">1. 首次登录和初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E8%8E%B7%E5%8F%96%E5%88%9D%E5%A7%8B%E7%AE%A1%E7%90%86%E5%91%98%E5%AF%86%E7%A0%81"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">1.1 获取初始管理员密码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E5%AE%8C%E6%88%90%E5%88%9D%E5%A7%8B%E5%8C%96%E5%90%91%E5%AF%BC"><span class="toc-number">1.3.3.2.</span> <span class="toc-text">1.2 完成初始化向导</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E6%8F%92%E4%BB%B6"><span class="toc-number">1.3.4.</span> <span class="toc-text">2. 安装必要插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E5%BF%85%E9%A1%BB%E5%AE%89%E8%A3%85%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">2.1 必须安装的插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.4.2.</span> <span class="toc-text">2.2 安装插件步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E5%A6%82%E6%9E%9C%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85%E5%A4%B1%E8%B4%A5"><span class="toc-number">1.3.4.3.</span> <span class="toc-text">2.3 如果插件安装失败</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE-Jenkins-%E6%9B%B4%E6%96%B0%E4%B8%AD%E5%BF%83%E9%95%9C%E5%83%8F%E6%BA%90"><span class="toc-number">1.3.5.</span> <span class="toc-text">3. 配置 Jenkins 更新中心镜像源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E4%BF%AE%E6%94%B9%E6%9B%B4%E6%96%B0%E4%B8%AD%E5%BF%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.5.1.</span> <span class="toc-text">3.1 修改更新中心配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%85%8D%E7%BD%AE%E7%B3%BB%E7%BB%9F%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.3.6.</span> <span class="toc-text">4. 配置系统设置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.6.1.</span> <span class="toc-text">4.1 系统配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%85%A8%E5%B1%80%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.6.2.</span> <span class="toc-text">4.2 全局工具配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%85%8D%E7%BD%AE%E5%87%AD%E6%8D%AE%E7%AE%A1%E7%90%86"><span class="toc-number">1.3.7.</span> <span class="toc-text">5. 配置凭据管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E6%B7%BB%E5%8A%A0-GitLab-%E5%87%AD%E6%8D%AE"><span class="toc-number">1.3.7.1.</span> <span class="toc-text">5.1 添加 GitLab 凭据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-%E6%B7%BB%E5%8A%A0-SSH-%E5%87%AD%E6%8D%AE%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="toc-number">1.3.7.2.</span> <span class="toc-text">5.2 添加 SSH 凭据（可选）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E8%A1%8Ccicd%E7%9A%84%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="toc-number">1.4.</span> <span class="toc-text">进行cicd的操作：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E5%88%9B%E5%BB%BA-Pipeline-%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. 创建 Pipeline 任务</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AE%E6%BA%90%E7%A0%81%E7%AE%A1%E7%90%86"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">2. 配置源码管理</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE-Git-%E5%87%AD%E6%8D%AE"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">3. 配置 Git 凭据</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-%E9%85%8D%E7%BD%AE-SSH-%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">4. 配置 SSH 免密登录</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-1-%E5%9C%A8-Jenkins-%E5%AE%B9%E5%99%A8%E5%86%85%E7%94%9F%E6%88%90-SSH-%E5%AF%86%E9%92%A5"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">4.1 在 Jenkins 容器内生成 SSH 密钥</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-2-%E5%B0%86%E5%85%AC%E9%92%A5%E6%B7%BB%E5%8A%A0%E5%88%B0%E7%9B%AE%E6%A0%87%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">4.2 将公钥添加到目标服务器</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-3-%E6%B5%8B%E8%AF%95-SSH-%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.4.1.6.</span> <span class="toc-text">4.3 测试 SSH 连接</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%A4%B4%E9%83%A8%E5%AE%9A%E4%B9%89%E4%B8%8E%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.4.2.</span> <span class="toc-text">1. 头部定义与环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%8B%89%E5%8F%96%E4%BB%A3%E7%A0%81-Pull-Code"><span class="toc-number">1.4.3.</span> <span class="toc-text">2. 第一阶段：拉取代码 (Pull Code)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%9E%84%E5%BB%BA-Docker-%E9%95%9C%E5%83%8F-Build"><span class="toc-number">1.4.4.</span> <span class="toc-text">3. 第二阶段：构建 Docker 镜像 (Build)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%8E%A8%E9%80%81%E5%88%B0%E7%9B%AE%E6%A0%87%E6%9C%8D%E5%8A%A1%E5%99%A8-Deploy"><span class="toc-number">1.4.5.</span> <span class="toc-text">. 第三阶段：推送到目标服务器 (Deploy)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%BB%93%E6%9D%9F%E5%A4%84%E7%90%86-Post"><span class="toc-number">1.4.6.</span> <span class="toc-text">5. 结束处理 (Post)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.7.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/docker-deploy-seafile/" title="Docker 部署 Seafile（个人详细版本）">Docker 部署 Seafile（个人详细版本）</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/cicd-pipeline-notes/" title="CICD 流水线笔记">CICD 流水线笔记</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/k8s-deploy-seafile/" title="K8s 部署 Seafile">K8s 部署 Seafile</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/k8s-basics-notes/" title="K8s 基础部署笔记">K8s 基础部署笔记</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/k8s-offline-manual/" title="K8s 离线部署手册">K8s 离线部署手册</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QWQ123321123</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.1"></script><script src="/js/main.js?v=5.6.1"></script><div class="js-pjax"></div><div id="my-aplayer"></div><script src="/js/playlist-data.js"></script><script src="/js/static-player.js"></script><script src="/js/banner.js"></script><script src="/js/cover-spin.js"></script><script src="/js/player-drag.js"></script><link rel="stylesheet" href="/pluginsSrc/aplayer/dist/APlayer.min.css?v=1.10.1" media="print" onload="this.media='all'"><script src="/pluginsSrc/aplayer/dist/APlayer.min.js?v=1.10.1"></script><script src="/js/blank.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

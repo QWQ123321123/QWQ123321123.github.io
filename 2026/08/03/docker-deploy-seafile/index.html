@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Docker 部署 Seafile（个人详细版本） | A Nobody's Blog</title><meta name="author" content="QWQ123321123"><meta name="copyright" content="QWQ123321123"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="docker部署seafile（个人详细版本）1.首先安装docker与dockercompose在线安装或者离线安装都可以 离线安装docker要使其成为系统级的服务，需要手动编写配置文件才能用systemctl命令对其进行操作 1vim &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;docker.service  创建并写入以下内容： 12345678910111213141516171819202">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 部署 Seafile（个人详细版本）">
+<meta property="og:url" content="https://qwq123321123.github.io/2026/08/03/docker-deploy-seafile/index.html">
+<meta property="og:site_name" content="A Nobody&#39;s Blog">
+<meta property="og:description" content="docker部署seafile（个人详细版本）1.首先安装docker与dockercompose在线安装或者离线安装都可以 离线安装docker要使其成为系统级的服务，需要手动编写配置文件才能用systemctl命令对其进行操作 1vim &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;docker.service  创建并写入以下内容： 12345678910111213141516171819202">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qwq123321123.github.io/images/head.jpg">
+<meta property="article:published_time" content="2026-08-03T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-03T08:45:39.324Z">
+<meta property="article:author" content="QWQ123321123">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Seafile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qwq123321123.github.io/images/head.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Docker 部署 Seafile（个人详细版本）",
+  "url": "https://qwq123321123.github.io/2026/08/03/docker-deploy-seafile/",
+  "image": "https://qwq123321123.github.io/images/head.jpg",
+  "datePublished": "2026-08-03T04:00:00.000Z",
+  "dateModified": "2026-08-03T08:45:39.324Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QWQ123321123",
+      "url": "https://qwq123321123.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/images/head.jpg"><link rel="canonical" href="https://qwq123321123.github.io/2026/08/03/docker-deploy-seafile/index.html"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><link rel="stylesheet" href="https://fonts.googleapis.cn/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Docker 部署 Seafile（个人详细版本）',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/banner.css"><link rel="stylesheet" href="/css/player.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/images/background.jpg);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">A Nobody's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Docker 部署 Seafile（个人详细版本）</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Docker 部署 Seafile（个人详细版本）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-03T08:45:39.324Z" title="更新于 2026-08-03 16:45:39">2026-08-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="docker部署seafile（个人详细版本）"><a href="#docker部署seafile（个人详细版本）" class="headerlink" title="docker部署seafile（个人详细版本）"></a>docker部署seafile（个人详细版本）</h1><h2 id="1-首先安装docker与dockercompose"><a href="#1-首先安装docker与dockercompose" class="headerlink" title="1.首先安装docker与dockercompose"></a>1.首先安装docker与dockercompose</h2><p>在线安装或者离线安装都可以 离线安装docker要使其成为系统级的服务，需要手动编写配置文件才能用systemctl命令对其进行操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/systemd/system/docker.service</span><br></pre></td></tr></table></figure>
+
+<p>创建并写入以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Docker Application Container Engine</span><br><span class="line">Documentation=https://docs.docker.com</span><br><span class="line">After=network-online.target firewalld.service</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=notify</span><br><span class="line">ExecStart=/usr/bin/dockerd --selinux-enabled=false -H unix:///var/run/docker.sock</span><br><span class="line">ExecReload=/bin/kill -s HUP $MAINPID</span><br><span class="line">LimitNOFILE=1048576</span><br><span class="line">LimitNPROC=65536</span><br><span class="line">LimitCORE=infinity</span><br><span class="line">TimeoutStartSec=0</span><br><span class="line">Delegate=yes</span><br><span class="line">KillMode=process</span><br><span class="line">Restart=on-failure</span><br><span class="line">StartLimitBurst=3</span><br><span class="line">StartLimitInterval=60s</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>创建daemon.json文件:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 创建相关文件夹，其中/dcdata/docker 是docker的根目录</span></span></span><br><span class="line">mkdir -p /etc/docker &amp;&amp; mkdir -p /dcdata/docker</span><br><span class="line"></span><br><span class="line">vim /etc/docker/daemon.json</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 输入以上内容</span></span></span><br><span class="line">&#123;</span><br><span class="line">        &quot;data-root&quot;: &quot;/dcdata/docker&quot;,</span><br><span class="line">        &quot;bip&quot;:&quot;172.31.0.1/24&quot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">规定docker内部网络ip段，是因为如果不规定，可能会生成与现在内网ip相同的段</span></span><br></pre></td></tr></table></figure>
+
+<p>给服务授权：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 /etc/systemd/system/docker.service</span><br><span class="line">chmod 755 /etc/docker/daemon.json</span><br></pre></td></tr></table></figure>
+
+<p>以下是配置文件结构说明：（ai）</p>
+<p>一、<code>[Unit]</code> 区块：定义服务的元数据和依赖关系</p>
+<p>用于描述服务的基本信息、启动顺序和依赖的其他系统组件。</p>
+<ul>
+<li><code>Description=Docker Application Container Engine</code>服务的描述信息，说明这是 Docker 容器引擎服务。</li>
+<li><code>Documentation=https://docs.docker.com</code>指向 Docker 官方文档的链接，便于管理员查阅相关说明。</li>
+<li><code>After=network-online.target firewalld.service</code>定义服务的启动顺序：Docker 必须在 <code>network-online.target</code>（网络完全就绪）和 <code>firewalld.service</code>（防火墙服务）启动<strong>之后</strong>才启动，避免因网络未就绪或防火墙未加载导致的问题。</li>
+<li><code>Wants=network-online.target</code>表示 Docker 服务 “希望”<code>network-online.target</code> 启动（但不强制依赖），即使该目标未启动，Docker 仍可尝试启动（软依赖）。</li>
+</ul>
+<p>二、<code>[Service]</code> 区块：定义服务的运行规则</p>
+<p>核心区块，指定 Docker 守护进程的启动命令、运行参数、资源限制等。</p>
+<ul>
+<li><code>Type=notify</code>服务类型为 <code>notify</code>：表示 <code>dockerd</code> 启动完成后会主动通知 systemd “已就绪”，systemd 收到通知后才会认为服务启动成功（确保服务完全就绪后再继续后续流程）。</li>
+<li><code>ExecStart=/usr/bin/dockerd --selinux-enabled=false -H unix:///var/run/docker.sock</code><strong>启动命令</strong>：指定 Docker 守护进程的执行路径和参数。<ul>
+<li><code>/usr/bin/dockerd</code>：Docker 守护进程的可执行文件路径。</li>
+<li><code>--selinux-enabled=false</code>：禁用 SELinux 支持（SELinux 是 Linux 安全模块，部分场景下可能与 Docker 冲突，禁用可简化配置）。</li>
+<li><code>-H unix:///var/run/docker.sock</code>：指定 Docker 守护进程的通信端点为 Unix 套接字（<code>/var/run/docker.sock</code>），Docker 客户端（如 <code>docker</code> 命令）通过该套接字与守护进程通信。</li>
+</ul>
+</li>
+<li><code>ExecReload=/bin/kill -s HUP $MAINPID</code><strong>重载命令</strong>：当执行 <code>systemctl reload docker</code> 时，通过发送 <code>HUP</code> 信号（挂起信号）给 Docker 主进程（<code>$MAINPID</code>），触发守护进程重新加载配置（无需重启服务）。</li>
+<li><code>LimitNOFILE=1048576</code>限制 Docker 进程可打开的最大文件描述符数量（1048576），避免因文件描述符不足导致服务异常。</li>
+<li><code>LimitNPROC=65536</code>限制 Docker 进程可创建的最大进程数（65536），防止进程数过多导致系统资源耗尽。</li>
+<li><code>LimitCORE=infinity</code>允许 Docker 进程生成核心转储文件（core dump）的大小不受限制，便于调试服务崩溃问题（核心转储文件包含进程崩溃时的内存状态）。</li>
+<li><code>TimeoutStartSec=0</code>禁用服务启动超时限制（<code>0</code> 表示无超时），因为 Docker 启动可能需要较长时间（尤其首次启动或容器较多时）。</li>
+<li><code>Delegate=yes</code>允许 Docker 守护进程管理自身的子进程（如容器进程）的资源控制（如 CPU、内存限制），将部分权限委托给 Docker，提升容器资源管理的灵活性。</li>
+<li><code>KillMode=process</code>当执行 <code>systemctl stop docker</code> 时，仅终止 Docker 主进程（<code>dockerd</code>），而不强制终止其所有子进程（容器进程），避免误杀容器（容器可独立于守护进程运行）。</li>
+<li><code>Restart=on-failure</code>定义服务故障时的重启策略：仅当 Docker 守护进程非正常退出（如崩溃）时，systemd 才会自动重启它（正常退出时不重启）。</li>
+<li><code>StartLimitBurst=3</code>限制单位时间内的最大重启次数：60 秒内最多重启 3 次，防止服务陷入无限重启循环。</li>
+<li><code>StartLimitInterval=60s</code>与 <code>StartLimitBurst</code> 配合，定义计数重启次数的时间窗口（60 秒）。</li>
+</ul>
+<p>三、<code>[Install]</code> 区块：定义服务的安装配置</p>
+<p>指定服务在系统启动时的激活方式（即是否随系统自动启动）。</p>
+<ul>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>表示当系统启动到multi-user.target</p>
+<p>（多用户命令行模式，非图形界面）时，Docker 服务会被自动激活（随系统启动）。</p>
+<p>multi-user.target是 Linux 系统的基本运行级别，确保 Docker 在系统启动早期即可可用。</p>
+</li>
+</ul>
+<p>&#x2F;opt&#x2F;seafile目录是默认存储Seafile docker compose文件的目录</p>
+<p>可以自己更改</p>
+<p>Seafile 使用两个 <a target="_blank" rel="noopener" href="https://docs.docker.com/storage/volumes/">Docker 卷</a> 来保存其数据库和 Seafile Docker 容器中生成的数据。卷的主机路径分别是<code>/opt/seafile-mysql</code>和<code>/opt/seafile-data</code></p>
+<p>Seafile 和 Nginx（其他反向代理工具也是） 的所有配置和日志文件都存储在 Seafile 容器的卷中。</p>
+<h2 id="2-使用wget命令获取各个配置文件的模板"><a href="#2-使用wget命令获取各个配置文件的模板" class="headerlink" title="2.使用wget命令获取各个配置文件的模板"></a>2.使用wget命令获取各个配置文件的模板</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget -O .env https://manual.seafile.com/12.0/repo/docker/ce/env</span><br><span class="line">wget https://manual.seafile.com/12.0/repo/docker/ce/seafile-server.yml</span><br><span class="line">wget https://manual.seafile.com/12.0/repo/docker/caddy.yml</span><br><span class="line">wget https://manual.seafile.com/12.0/repo/docker/seadoc.yml</span><br></pre></td></tr></table></figure>
+
+<p>内网服务器环境可以自己传</p>
+<h3 id="关于JWT认证"><a href="#关于JWT认证" class="headerlink" title="关于JWT认证"></a>关于JWT认证</h3><p>如果想使用JWT私钥 可以下载pwgen</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install pwgen #centos</span><br><span class="line">apt install pwgen #ubuntu</span><br><span class="line"></span><br><span class="line">pwgen -s 40 1 //是一个用于生成随机密码的命令</span><br></pre></td></tr></table></figure>
+
+<p>之后复制生成的JWT密钥 写在.env这个配置文件里</p>
+<p>ps:onlyoffice是单独的一个服务，最好另外再生成一串密钥</p>
+<p>之后会在拉取完镜像之后在某个.py的配置脚本里添加（.env中onlyoffice的配置也是要写的）</p>
+<h2 id="3-env与yml配置文件的内容编写"><a href="#3-env与yml配置文件的内容编写" class="headerlink" title="3 .env与yml配置文件的内容编写"></a>3 .env与yml配置文件的内容编写</h2><p>以下是配置文件的详解与具体配置：</p>
+<p><img src="https://img2024.cnblogs.com/blog/2605882/202501/2605882-20250124151655360-1894704477.png" alt="img"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">我新建了一个data目录 将容器的数据卷都放在了data目录下(实际编写时不应该写注释)</span></span><br><span class="line">COMPOSE_FILE=&#x27;seafile-server.yml,caddy.yml,seadoc.yml&#x27;</span><br><span class="line">COMPOSE_PATH_SEPARATOR=&#x27;,&#x27;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SEAFILE_IMAGE=seafileltd/seafile-mc:12.0-latest #指定 Seafile 主服务（含 Web 界面、文件存储核心等）的 Docker 镜像</span><br><span class="line">SEAFILE_DB_IMAGE=mariadb:10.11  #指定 Seafile 所使用的数据库服务镜像</span><br><span class="line">SEAFILE_MEMCACHED_IMAGE=memcached:1.6.29 #指定缓存服务 Memcached 的 Docker 镜像</span><br><span class="line">SEAFILE_CADDY_IMAGE=lucaslorentz/caddy-docker-proxy:2.9-alpine #指定反向代理服务 Caddy 的 Docker 镜像</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">OnlyOffice 配置</span></span><br><span class="line">ONLYOFFICE_IMAGE=onlyoffice/documentserver:7.3.3</span><br><span class="line">ONLYOFFICE_PORT=8082</span><br><span class="line">ONLYOFFICE_JWT_SECRET=MHVRce4bp8g4AyOUT98oEsYrVVexREqfXuUEFYRG</span><br><span class="line"></span><br><span class="line">SEAFILE_VOLUME=/data/seafile-data #指定 Seafile 主服务的数据存储路径</span><br><span class="line">SEAFILE_MYSQL_VOLUME=/data/seafile-mysql/db #指定 MariaDB 数据库的数据存储路径</span><br><span class="line">SEAFILE_CADDY_VOLUME=/data/seafile-caddy #指定 Caddy 反向代理的数据存储路径</span><br><span class="line">//以下是数据库的参数配置</span><br><span class="line">SEAFILE_MYSQL_DB_HOST=db</span><br><span class="line">INIT_SEAFILE_MYSQL_ROOT_PASSWORD=Ew5r********f1CYz</span><br><span class="line">SEAFILE_MYSQL_DB_USER=seafile</span><br><span class="line">SEAFILE_MYSQL_DB_PASSWORD=Ew5rP******h2f1CYz</span><br><span class="line"></span><br><span class="line">TIME_ZONE=Asia/Shanghai #时区</span><br><span class="line"></span><br><span class="line">JWT_PRIVATE_KEY=FjMDpUVCVpCH7OgLAY5dbmWt0jtaOEZwZMDm6MGH #填写使用工具生成的JWT密钥</span><br><span class="line"></span><br><span class="line">SEAFILE_SERVER_HOSTNAME=10.XX.XX.102 #填写真实的IP地址</span><br><span class="line">SEAFILE_SERVER_PROTOCOL=http #web服务的协议</span><br><span class="line"></span><br><span class="line">INIT_SEAFILE_ADMIN_EMAIL=admin@xxx.work  #默认的管理员邮箱 密码 自定义</span><br><span class="line">INIT_SEAFILE_ADMIN_PASSWORD=se7sw@6N~nlCaN</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SEADOC_IMAGE=seafileltd/sdoc-server:1.0-latest #指定运行 SeaDoc 服务所使用的 Docker 镜像</span><br><span class="line">SEADOC_VOLUME=/data/seadoc-data  #指定SeaDoc服务所使用的存储路径</span><br><span class="line"></span><br><span class="line">ENABLE_SEADOC=true #启用 SeaDoc 服务</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">NOTIFICATION_SERVER_IMAGE=seafileltd/notification-server:12.0-latest  #指定运行通知服务器所使用的 Docker 镜像。</span><br><span class="line">NOTIFICATION_SERVER_VOLUME=/data/notification-data #指定通知服务器的数据存储路径</span><br></pre></td></tr></table></figure>
+
+<p>上述配置将seafile的功能全都启用了</p>
+<p>另外几个配置文件的数据卷的目录 也要与.env里的一致</p>
+<p>这里没有使用统一配置的dockecompose.yml 而是对其进行拆分 再使用.env文件对yml里的参数进行定义 例如下配置文件中的一些参数（从 Seafile Docker 12.0开始，就需要使用四个配置文件<code>.env</code>, <code>seafile-server.yml</code>, <code>caddy.yml</code>和 <code>seadoc.yml</code> 。）</p>
+<p>配置caddy.yml（反向代理）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">示例配置 与.<span class="built_in">env</span>中的数据卷路径配置一致</span></span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  caddy:</span><br><span class="line">    image: $&#123;SEAFILE_CADDY_IMAGE:-lucaslorentz/caddy-docker-proxy:2.9-alpine&#125;</span><br><span class="line">    container_name: seafile-caddy</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    ports:</span><br><span class="line">      - 80:80</span><br><span class="line">      - 443:443</span><br><span class="line">    environment:</span><br><span class="line">      - CADDY_INGRESS_NETWORKS=seafile-net</span><br><span class="line">    volumes:</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock</span><br><span class="line">      - $&#123;SEAFILE_CADDY_VOLUME:-/data/seafile-caddy&#125;:/data/caddy</span><br><span class="line">    networks:</span><br><span class="line">      - seafile-net</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD-SHELL&quot;, &quot;curl --fail http://localhost:2019/metrics || exit 1&quot;]</span><br><span class="line">      start_period: 20s</span><br><span class="line">      interval: 20s</span><br><span class="line">      timeout: 5s</span><br><span class="line">      retries: 3</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  seafile-net:</span><br><span class="line">    name: seafile-net</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>配置seadoc.yml</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  seadoc:</span><br><span class="line">    image: $&#123;SEADOC_IMAGE:-seafileltd/sdoc-server:1.0-latest&#125;</span><br><span class="line">    container_name: seadoc</span><br><span class="line">    restart: always</span><br><span class="line">    volumes:</span><br><span class="line">      - $&#123;SEADOC_VOLUME:-/data/seadoc-data/&#125;:/shared</span><br><span class="line">    # ports:</span><br><span class="line">    #   - &quot;80:80&quot;</span><br><span class="line">    environment:</span><br><span class="line">      - DB_HOST=$&#123;SEAFILE_MYSQL_DB_HOST:-db&#125;</span><br><span class="line">      - DB_PORT=$&#123;SEAFILE_MYSQL_DB_PORT:-3306&#125;</span><br><span class="line">      - DB_USER=$&#123;SEAFILE_MYSQL_DB_USER:-seafile&#125;</span><br><span class="line">      - DB_PASSWORD=$&#123;SEAFILE_MYSQL_DB_PASSWORD:?Variable is not set or empty&#125;</span><br><span class="line">      - DB_NAME=$&#123;SEADOC_MYSQL_DB_NAME:-seahub_db&#125;</span><br><span class="line">      - TIME_ZONE=$&#123;TIME_ZONE:-Etc/UTC&#125;</span><br><span class="line">      - JWT_PRIVATE_KEY=$&#123;JWT_PRIVATE_KEY:?Variable is not set or empty&#125;</span><br><span class="line">      - NON_ROOT=$&#123;NON_ROOT:-false&#125;</span><br><span class="line">      - SEAHUB_SERVICE_URL=$&#123;SEAFILE_SERVICE_URL:-http://seafile&#125;</span><br><span class="line">    labels:</span><br><span class="line">      caddy: $&#123;SEAFILE_SERVER_PROTOCOL:-http&#125;://$&#123;SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty&#125;</span><br><span class="line">      caddy.@ws.0_header: &quot;Connection *Upgrade*&quot;</span><br><span class="line">      caddy.@ws.1_header: &quot;Upgrade websocket&quot;</span><br><span class="line">      caddy.0_reverse_proxy: &quot;@ws &#123;&#123;upstreams 80&#125;&#125;&quot;</span><br><span class="line">      caddy.1_handle_path: &quot;/socket.io/*&quot;</span><br><span class="line">      caddy.1_handle_path.0_rewrite: &quot;* /socket.io&#123;uri&#125;&quot;</span><br><span class="line">      caddy.1_handle_path.1_reverse_proxy: &quot;&#123;&#123;upstreams 80&#125;&#125;&quot;</span><br><span class="line">      caddy.2_handle_path: &quot;/sdoc-server/*&quot;</span><br><span class="line">      caddy.2_handle_path.0_rewrite: &quot;* &#123;uri&#125;&quot;</span><br><span class="line">      caddy.2_handle_path.1_reverse_proxy: &quot;&#123;&#123;upstreams 80&#125;&#125;&quot;</span><br><span class="line">    depends_on:</span><br><span class="line">      db:</span><br><span class="line">        condition: service_healthy</span><br><span class="line">    networks:</span><br><span class="line">      - seafile-net</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  seafile-net:</span><br><span class="line">    name: seafile-net</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>配置seafile-server.yml</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">services:</span><br><span class="line">  db:</span><br><span class="line">    image: $&#123;SEAFILE_DB_IMAGE:-mariadb:10.11&#125;</span><br><span class="line">    container_name: seafile-mysql</span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      - MYSQL_ROOT_PASSWORD=$&#123;INIT_SEAFILE_MYSQL_ROOT_PASSWORD:-&#125;</span><br><span class="line">      - MYSQL_LOG_CONSOLE=true</span><br><span class="line">      - MARIADB_AUTO_UPGRADE=1</span><br><span class="line">    volumes:</span><br><span class="line">      - &quot;$&#123;SEAFILE_MYSQL_VOLUME:-/data/seafile-mysql/db&#125;:/var/lib/mysql&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - seafile-net</span><br><span class="line">    healthcheck:</span><br><span class="line">      test:</span><br><span class="line">        [</span><br><span class="line">          &quot;CMD&quot;,</span><br><span class="line">          &quot;/usr/local/bin/healthcheck.sh&quot;,</span><br><span class="line">          &quot;--connect&quot;,</span><br><span class="line">          &quot;--mariadbupgrade&quot;,</span><br><span class="line">          &quot;--innodb_initialized&quot;,</span><br><span class="line">        ]</span><br><span class="line">      interval: 20s</span><br><span class="line">      start_period: 30s</span><br><span class="line">      timeout: 5s</span><br><span class="line">      retries: 10</span><br><span class="line"></span><br><span class="line">  memcached:</span><br><span class="line">    image: $&#123;SEAFILE_MEMCACHED_IMAGE:-memcached:1.6.29&#125;</span><br><span class="line">    container_name: seafile-memcached</span><br><span class="line">    restart: always</span><br><span class="line">    entrypoint: memcached -m 256</span><br><span class="line">    networks:</span><br><span class="line">      - seafile-net</span><br><span class="line">      </span><br><span class="line">  onlyoffice:</span><br><span class="line">    image: $&#123;ONLYOFFICE_IMAGE&#125;</span><br><span class="line">    container_name: onlyoffice</span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      - JWT_ENABLED=true</span><br><span class="line">      - JWT_SECRET=$&#123;ONLYOFFICE_JWT_SECRET&#125;</span><br><span class="line">      - JWT_HEADER=Authorization</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;$&#123;ONLYOFFICE_PORT&#125;:80&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - seafile-net     </span><br><span class="line"></span><br><span class="line">  seafile:</span><br><span class="line">    image: $&#123;SEAFILE_IMAGE:-seafileltd/seafile-mc:12.0-latest&#125;</span><br><span class="line">    container_name: seafile</span><br><span class="line">    restart: always</span><br><span class="line">    # ports:</span><br><span class="line">    #   - &quot;80:80&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - $&#123;SEAFILE_VOLUME:-/data/seafile-data&#125;:/shared</span><br><span class="line">    environment:</span><br><span class="line">      - DB_HOST=$&#123;SEAFILE_MYSQL_DB_HOST:-db&#125;</span><br><span class="line">      - DB_PORT=$&#123;SEAFILE_MYSQL_DB_PORT:-3306&#125;</span><br><span class="line">      - DB_USER=$&#123;SEAFILE_MYSQL_DB_USER:-seafile&#125;</span><br><span class="line">      - DB_ROOT_PASSWD=$&#123;INIT_SEAFILE_MYSQL_ROOT_PASSWORD:-&#125;</span><br><span class="line">      - DB_PASSWORD=$&#123;SEAFILE_MYSQL_DB_PASSWORD:?Variable is not set or empty&#125;</span><br><span class="line">      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=$&#123;SEAFILE_MYSQL_DB_CCNET_DB_NAME:-ccnet_db&#125;</span><br><span class="line">      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=$&#123;SEAFILE_MYSQL_DB_SEAFILE_DB_NAME:-seafile_db&#125;</span><br><span class="line">      - SEAFILE_MYSQL_DB_SEAHUB_DB_NAME=$&#123;SEAFILE_MYSQL_DB_SEAHUB_DB_NAME:-seahub_db&#125;</span><br><span class="line">      - TIME_ZONE=$&#123;TIME_ZONE:-Etc/UTC&#125;</span><br><span class="line">      - INIT_SEAFILE_ADMIN_EMAIL=$&#123;INIT_SEAFILE_ADMIN_EMAIL:-me@example.com&#125;</span><br><span class="line">      - INIT_SEAFILE_ADMIN_PASSWORD=$&#123;INIT_SEAFILE_ADMIN_PASSWORD:-asecret&#125;</span><br><span class="line">      - SEAFILE_SERVER_HOSTNAME=$&#123;SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty&#125;</span><br><span class="line">      - SEAFILE_SERVER_PROTOCOL=$&#123;SEAFILE_SERVER_PROTOCOL:-http&#125;</span><br><span class="line">      - SITE_ROOT=$&#123;SITE_ROOT:-/&#125;</span><br><span class="line">      - NON_ROOT=$&#123;NON_ROOT:-false&#125;</span><br><span class="line">      - JWT_PRIVATE_KEY=$&#123;JWT_PRIVATE_KEY:?Variable is not set or empty&#125;</span><br><span class="line">      - SEAFILE_LOG_TO_STDOUT=$&#123;SEAFILE_LOG_TO_STDOUT:-false&#125;</span><br><span class="line">      - ENABLE_SEADOC=$&#123;ENABLE_SEADOC:-true&#125;</span><br><span class="line">      - SEADOC_SERVER_URL=$&#123;SEAFILE_SERVER_PROTOCOL:-http&#125;://$&#123;SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty&#125;/sdoc-server</span><br><span class="line">    labels:</span><br><span class="line">      caddy: $&#123;SEAFILE_SERVER_PROTOCOL:-http&#125;://$&#123;SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty&#125;</span><br><span class="line">      caddy.reverse_proxy: &quot;&#123;&#123;upstreams 80&#125;&#125;&quot;</span><br><span class="line">    depends_on:</span><br><span class="line">      db:</span><br><span class="line">        condition: service_healthy</span><br><span class="line">      memcached:</span><br><span class="line">        condition: service_started</span><br><span class="line">    networks:</span><br><span class="line">      - seafile-net</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  seafile-net:</span><br><span class="line">    name: seafile-net</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-容器操作"><a href="#4-容器操作" class="headerlink" title="4.容器操作"></a>4.容器操作</h2><p>.拉取所需镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker pull seafileltd/seafile-mc:12.0-latest</span><br><span class="line">docker pull mariadb:10.11</span><br><span class="line">docker pull memcached:1.6.29</span><br><span class="line">docker pull onlyoffice/documentserver:7.3.3  #onlyoffice</span><br><span class="line">docker pull lucaslorentz/caddy-docker-proxy:2.9-alpine #反向代理</span><br><span class="line">docker pull seafileltd/sdoc-server:1.0-latest #文档服务镜像</span><br><span class="line">docker pull seafileltd/notification-server:12.0-latest #拉这个是因为配置了通知服务</span><br></pre></td></tr></table></figure>
+
+<p>在使用docker拉取完所需镜像过后 可以直接使用命令生成所拉取镜像的离线包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save -o xxxx.tar  xxxx</span><br></pre></td></tr></table></figure>
+
+<p>这样在新的机器上部署可以不用配置docker的镜像加速直接上传镜像的离线包导入镜像</p>
+<p>要对这些离线包进行归档以后再上传</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i /离线包所在目录</span><br></pre></td></tr></table></figure>
+
+<p>镜像导入完成后，在配置文件编写的目录启动服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>之后查看容器运行状态</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps   </span><br></pre></td></tr></table></figure>
+
+<p>如有问题 启动失败之类的 查看日志 根据日志中具体哪个组件的报错进行分析</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose logs -f --tail=200</span><br></pre></td></tr></table></figure>
+
+<p>停止某服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose stop xxx</span><br></pre></td></tr></table></figure>
+
+<p>以上部署好了所有的的功能（包括onlyoffcie）。</p>
+<h2 id="注：onlyoffcie设置"><a href="#注：onlyoffcie设置" class="headerlink" title="注：onlyoffcie设置"></a>注：onlyoffcie设置</h2><p>再拉取 启动服务之后。挂在数据的目录下会出现这几个目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">seadoc-data  seafile  seafile-caddy  seafile-data  seafile-mysql</span><br></pre></td></tr></table></figure>
+
+<p>进入seafile-data目录修改一个配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /data/seafile-data/seafile/conf/seahub_settings.py</span><br></pre></td></tr></table></figure>
+
+<p>在文件末尾添加以下配置：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ENABLE_ONLYOFFICE = <span class="literal">True</span></span><br><span class="line">VERIFY_ONLYOFFICE_CERTIFICATE = <span class="literal">False</span></span><br><span class="line">ONLYOFFICE_APIJS_URL = <span class="string">&#x27;http://你部署的服务的机器ip以及onlyoffice服务的端口号/web-apps/apps/api/documents/api.js&#x27;</span></span><br><span class="line">ONLYOFFICE_FILE_EXTENSION = (<span class="string">&#x27;doc&#x27;</span>, <span class="string">&#x27;docx&#x27;</span>, <span class="string">&#x27;ppt&#x27;</span>, <span class="string">&#x27;pptx&#x27;</span>, <span class="string">&#x27;xls&#x27;</span>, <span class="string">&#x27;xlsx&#x27;</span>)</span><br><span class="line">ONLYOFFICE_EDIT_FILE_EXTENSION = (<span class="string">&#x27;docx&#x27;</span>, <span class="string">&#x27;pptx&#x27;</span>, <span class="string">&#x27;xlsx&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 尝试这些配置键</span></span><br><span class="line">ONLYOFFICE_JWT_SECRET = <span class="string">&#x27;你单独生成的JWT密钥&#x27;</span></span><br><span class="line">ONLYOFFICE_JWT_HEADER = <span class="string">&#x27;Authorization&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>重启容器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker-compose restart seafile</span><br><span class="line">docker-compose restart onlyoffice</span><br></pre></td></tr></table></figure>
+
+<p>登录seafile并使用 </p>
+<h2 id="ps-如果onlyoffcie提示未授权"><a href="#ps-如果onlyoffcie提示未授权" class="headerlink" title="ps:如果onlyoffcie提示未授权"></a>ps:如果onlyoffcie提示未授权</h2><p>检查onlyffcie容器日志输出，一般是JWT密钥配置没有与.env文件中的匹配</p>
+<p>(部署完成了一个初步安全可用的seafile)</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qwq123321123.github.io">QWQ123321123</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qwq123321123.github.io/2026/08/03/docker-deploy-seafile/">https://qwq123321123.github.io/2026/08/03/docker-deploy-seafile/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qwq123321123.github.io" target="_blank">A Nobody's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Docker/">Docker</a><a class="post-meta__tags" href="/tags/Seafile/">Seafile</a></div><div class="post-share"><div class="social-share" data-image="/images/head.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/03/cicd-pipeline-notes/" title="CICD 流水线笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">CICD 流水线笔记</div></div><div class="info-2"><div class="info-item-1">CICD 流水线文档git代码管理 jenkins docker或者k8s集群 对于CICD本身的理解： CI 与 CD 离不开jenkins这一组件，CI的过程即是通过Jenkins将代码从git拉取，构建，制作镜像交给测试人员 可以实现持续的集成，自动构建，测试 CD通过Jenkins将已经测试好的发行版本，拉取 构建 制作为镜像交给运维人员去部署 持续交付：交付给运维人员手动部署 持续部署：自动化部署 我的流程大致是这样的： GitLab (代码仓库)    ↓ Jenkins (CI&#x2F;CD 服务器)   ↓ Docker 镜像构建   ↓ 目标服务器部署 Git，Github，Gitlab的区别Git是一个开源的分布式版本控制系统。用于处理或小或大的项目 Github是基于git的在线代码托管服务。Gitlab也是，只是由不同人开发 部署git服务准备一台机器 内存最好10G起步 1234567891011121314151617181920212223242526#使用docker安装gitlab，国内大部分加速地址都没了，代理docker的网络来拉取镜像，网...</div></div></div></a><a class="pagination-related" href="/2026/08/03/hello-world/" title="Hello World"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Hello World</div></div><div class="info-2"><div class="info-item-1">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;  More info: Writing Run server1$ hexo server  More info: Server Generate static files1$ hexo generate  More info: Generating Deploy to remote sites1$ hexo deploy  More info: Deployment </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/03/k8s-deploy-seafile/" title="K8s 部署 Seafile"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-03</div><div class="info-item-2">K8s 部署 Seafile</div></div><div class="info-2"><div class="info-item-1">组件架构123456789101112131415161718192021222324252627┌─────────────────────────────────────────────────────────┐│                    Kubernetes 集群                       ││                    (Namespace: seafile)                  │├─────────────────────────────────────────────────────────┤│                                                           ││  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ││  │   Seafile    │  │   MariaDB    │  │  Memcached   │  ││  │   (主应用)    │  │   (数据库)    │  ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/images/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QWQ123321123</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/QWQ123321123"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#docker%E9%83%A8%E7%BD%B2seafile%EF%BC%88%E4%B8%AA%E4%BA%BA%E8%AF%A6%E7%BB%86%E7%89%88%E6%9C%AC%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">docker部署seafile（个人详细版本）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A6%96%E5%85%88%E5%AE%89%E8%A3%85docker%E4%B8%8Edockercompose"><span class="toc-number">1.1.</span> <span class="toc-text">1.首先安装docker与dockercompose</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8wget%E5%91%BD%E4%BB%A4%E8%8E%B7%E5%8F%96%E5%90%84%E4%B8%AA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E6%A8%A1%E6%9D%BF"><span class="toc-number">1.2.</span> <span class="toc-text">2.使用wget命令获取各个配置文件的模板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EJWT%E8%AE%A4%E8%AF%81"><span class="toc-number">1.2.1.</span> <span class="toc-text">关于JWT认证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-env%E4%B8%8Eyml%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E5%86%85%E5%AE%B9%E7%BC%96%E5%86%99"><span class="toc-number">1.3.</span> <span class="toc-text">3 .env与yml配置文件的内容编写</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%B9%E5%99%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">1.4.</span> <span class="toc-text">4.容器操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%EF%BC%9Aonlyoffcie%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">注：onlyoffcie设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ps-%E5%A6%82%E6%9E%9Conlyoffcie%E6%8F%90%E7%A4%BA%E6%9C%AA%E6%8E%88%E6%9D%83"><span class="toc-number">1.6.</span> <span class="toc-text">ps:如果onlyoffcie提示未授权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.7.</span> <span class="toc-text"></span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/docker-deploy-seafile/" title="Docker 部署 Seafile（个人详细版本）">Docker 部署 Seafile（个人详细版本）</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/cicd-pipeline-notes/" title="CICD 流水线笔记">CICD 流水线笔记</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/k8s-deploy-seafile/" title="K8s 部署 Seafile">K8s 部署 Seafile</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/k8s-basics-notes/" title="K8s 基础部署笔记">K8s 基础部署笔记</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/03/k8s-offline-manual/" title="K8s 离线部署手册">K8s 离线部署手册</a><time datetime="2026-08-03T04:00:00.000Z" title="发表于 2026-08-03 12:00:00">2026-08-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QWQ123321123</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.1"></script><script src="/js/main.js?v=5.6.1"></script><div class="js-pjax"></div><div id="my-aplayer"></div><script src="/js/playlist-data.js"></script><script src="/js/static-player.js"></script><script src="/js/banner.js"></script><script src="/js/cover-spin.js"></script><script src="/js/player-drag.js"></script><link rel="stylesheet" href="/pluginsSrc/aplayer/dist/APlayer.min.css?v=1.10.1" media="print" onload="this.media='all'"><script src="/pluginsSrc/aplayer/dist/APlayer.min.js?v=1.10.1"></script><script src="/js/blank.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
