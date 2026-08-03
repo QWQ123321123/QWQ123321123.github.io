@@ -6,6 +6,19 @@
   mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
 }
 
+/* 功能页顶部横幅：高度调小 + 底部轻微渐隐，与首页风格统一 */
+#page-header.not-home-page {
+  height: 300px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 85%, transparent 100%);
+}
+
+@media (max-width: 768px) {
+  #page-header.not-home-page {
+    height: 200px;
+  }
+}
+
 /* 全站背景压暗：弱化背景图的喧闹感，让卡片和横幅更突出 */
 #web_bg::after {
   content: '';
