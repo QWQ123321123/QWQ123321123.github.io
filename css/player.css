@@ -1,0 +1,151 @@
+/* APlayer 悬浮窗美化 */
+
+/* 整体抬离角落，留出悬浮间距（保留 right:0 让宽度自适应，避免布局塌陷） */
+.aplayer.aplayer-fixed,
+.aplayer.aplayer-fixed .aplayer-body {
+  left: 20px !important;
+  bottom: 20px !important;
+}
+
+/* 展开状态：毛玻璃圆角悬浮卡片 */
+.aplayer.aplayer-fixed .aplayer-body {
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.aplayer.aplayer-fixed .aplayer-pic {
+  border-radius: 12px 0 0 12px !important;
+}
+
+/* 收起状态：圆形悬浮小球 */
+.aplayer.aplayer-narrow .aplayer-body,
+.aplayer.aplayer-narrow .aplayer-pic {
+  border-radius: 50% !important;
+}
+
+/* 收起时的展开箭头：默认完全隐藏，悬停才浮现 */
+.aplayer.aplayer-narrow .aplayer-miniswitcher {
+  position: absolute !important;
+  top: 50% !important;
+  right: -8px !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  transition: opacity 0.25s ease !important;
+  overflow: hidden !important;
+}
+
+.aplayer.aplayer-narrow:hover .aplayer-miniswitcher {
+  opacity: 0.8 !important;
+}
+
+.aplayer.aplayer-narrow .aplayer-miniswitcher .aplayer-icon {
+  width: 10px !important;
+  height: 10px !important;
+  fill: #fff !important;
+  color: #fff !important;
+}
+
+
+/* 展开状态的折叠条：半透明深色，悬停显现 */
+.aplayer.aplayer-fixed:not(.aplayer-narrow) .aplayer-miniswitcher {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-radius: 0 18px 18px 0 !important;
+  opacity: 0.25;
+  transition: opacity 0.25s ease;
+}
+
+.aplayer.aplayer-fixed:not(.aplayer-narrow):hover .aplayer-miniswitcher {
+  opacity: 1;
+}
+
+/* 隐藏歌词浮层（纯音乐歌单只有 credits 文字，影响美观） */
+.aplayer .aplayer-lrc {
+  display: none !important;
+}
+
+/* 拖拽手感 */
+.aplayer.aplayer-fixed .aplayer-pic,
+.aplayer.aplayer-fixed .aplayer-info {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.aplayer.aplayer-fixed:active .aplayer-pic {
+  cursor: grabbing;
+}
+
+/* 歌单列表：圆角毛玻璃 */
+.aplayer.aplayer-fixed .aplayer-list {
+  margin-bottom: 76px !important;
+  margin-left: 8px;
+  margin-right: 8px;
+  border: none !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .aplayer.aplayer-fixed .aplayer-body {
+  background: rgba(32, 32, 38, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .aplayer.aplayer-fixed .aplayer-list {
+  background: rgba(32, 32, 38, 0.85);
+}
+
+[data-theme="dark"] .aplayer .aplayer-info .aplayer-music .aplayer-title,
+[data-theme="dark"] .aplayer .aplayer-info .aplayer-music .aplayer-author,
+[data-theme="dark"] .aplayer .aplayer-list ol li,
+[data-theme="dark"] .aplayer .aplayer-list ol li .aplayer-list-author {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* 旋转封面（黑胶唱片效果） */
+.aplayer-pic.spin {
+  background-image: none !important; /* 原背景换成 img 旋转层 */
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+
+.aplayer-pic.spin .spin-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: spin-rotate 18s linear infinite;
+  animation-play-state: paused; /* 默认停住 */
+}
+
+.aplayer-pic.spin.playing .spin-cover {
+  animation-play-state: running; /* 播放时旋转 */
+}
+
+@keyframes spin-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

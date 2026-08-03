@@ -1,0 +1,34 @@
+/* 首页横幅轮播 */
+#page-header.full_page {
+  position: relative;
+  /* 横幅底部渐隐，融入全站背景，消除割裂感 */
+  -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+}
+
+/* 全站背景压暗：弱化背景图的喧闹感，让卡片和横幅更突出 */
+#web_bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+
+#page-header .banner-ghost {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 保证标题和向下滚动按钮浮在轮播层之上 */
+#page-header #site-info,
+#page-header .scroll-down {
+  position: relative;
+  z-index: 1;
+}
