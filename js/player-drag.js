@@ -20,7 +20,7 @@
     box.addEventListener('pointerdown', function (e) {
       // 只在进度条、音量、歌单、展开箭头上不触发拖动；
       // 播放按钮区域允许按下，只有真的移动才算拖动（不影响点击播放）
-      if (e.target.closest('.aplayer-bar, .aplayer-list, .aplayer-miniswitcher, .aplayer-volume-wrap')) return;
+      if (e.target.closest('.aplayer-bar, .aplayer-bar-wrap, .aplayer-list, .aplayer-miniswitcher, .aplayer-volume-wrap')) return;
       dragging = true;
       moved = false;
       startX = e.clientX;
