@@ -1,0 +1,16 @@
+/* 毛玻璃卡片：半透明 + 背景模糊，让卡片与暗色背景融合 */
+.recent-post-item,
+#aside-content .card-widget,
+#article-container {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+[data-theme="dark"] .recent-post-item,
+[data-theme="dark"] #aside-content .card-widget,
+[data-theme="dark"] #article-container {
+  background: rgba(28, 28, 34, 0.78) !important;
+  border-color: rgba(255, 255, 255, 0.08);
+}
