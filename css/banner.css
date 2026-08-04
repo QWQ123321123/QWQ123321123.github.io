@@ -54,3 +54,56 @@
     width: calc(100% / 2 - 8px) !important;
   }
 }
+
+/* 横幅底部浮动波浪 */
+.waves-wrap {
+  position: relative;
+  height: 70px;
+  margin-top: -70px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.waves-wrap svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+}
+
+.waves-wrap .wave-back {
+  fill: rgba(255, 255, 255, 0.35);
+  animation: wave-move 14s linear infinite reverse;
+}
+
+.waves-wrap .wave-front {
+  fill: rgba(255, 255, 255, 0.7);
+  animation: wave-move 9s linear infinite;
+}
+
+@keyframes wave-move {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 深色模式下波浪调暗，避免过亮 */
+[data-theme="dark"] .waves-wrap .wave-back {
+  fill: rgba(20, 22, 28, 0.45);
+}
+
+[data-theme="dark"] .waves-wrap .wave-front {
+  fill: rgba(20, 22, 28, 0.75);
+}
+
+@media (max-width: 768px) {
+  .waves-wrap {
+    height: 40px;
+    margin-top: -40px;
+  }
+}
