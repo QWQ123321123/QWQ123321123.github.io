@@ -55,11 +55,11 @@
   }
 }
 
-/* 横幅底部浮动波浪 */
+/* 横幅底部浮动波浪：低透明度、更矮，保持若隐若现 */
 .waves-wrap {
   position: relative;
-  height: 70px;
-  margin-top: -70px;
+  height: 45px;
+  margin-top: -45px;
   overflow: hidden;
   pointer-events: none;
   z-index: 2;
@@ -74,13 +74,13 @@
 }
 
 .waves-wrap .wave-back {
-  fill: rgba(255, 255, 255, 0.35);
-  animation: wave-move 14s linear infinite reverse;
+  fill: rgba(255, 255, 255, 0.14);
+  animation: wave-move 16s linear infinite reverse;
 }
 
 .waves-wrap .wave-front {
-  fill: rgba(255, 255, 255, 0.7);
-  animation: wave-move 9s linear infinite;
+  fill: rgba(255, 255, 255, 0.26);
+  animation: wave-move 11s linear infinite;
 }
 
 @keyframes wave-move {
@@ -94,16 +94,16 @@
 
 /* 深色模式下波浪调暗，避免过亮 */
 [data-theme="dark"] .waves-wrap .wave-back {
-  fill: rgba(20, 22, 28, 0.45);
+  fill: rgba(20, 22, 28, 0.2);
 }
 
 [data-theme="dark"] .waves-wrap .wave-front {
-  fill: rgba(20, 22, 28, 0.75);
+  fill: rgba(20, 22, 28, 0.35);
 }
 
 @media (max-width: 768px) {
   .waves-wrap {
-    height: 40px;
-    margin-top: -40px;
+    height: 28px;
+    margin-top: -28px;
   }
 }
