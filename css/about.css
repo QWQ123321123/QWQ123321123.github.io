@@ -1,0 +1,139 @@
+/* 关于页样式 */
+.about-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.about-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.about-intro h2 {
+  margin: 0 0 10px;
+  border: none;
+  padding: 0;
+}
+
+.about-intro p {
+  margin: 4px 0;
+  opacity: 0.85;
+}
+
+.about-motto {
+  font-style: italic;
+  color: var(--theme-color, #49b1f5);
+}
+
+.about-page h3 {
+  margin-top: 30px;
+}
+
+.about-page h3 i {
+  margin-right: 8px;
+  color: var(--theme-color, #49b1f5);
+}
+
+/* 技术栈卡片 */
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.skill-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(73, 177, 245, 0.06);
+  border: 1px solid rgba(73, 177, 245, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.skill-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.skill-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 1.05em;
+}
+
+.skill-head i {
+  color: var(--theme-color, #49b1f5);
+  font-size: 1.2em;
+}
+
+.skill-card p {
+  margin: 6px 0 10px;
+  font-size: 0.9em;
+  opacity: 0.75;
+}
+
+.skill-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.skill-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #49b1f5, #6dd0ff);
+}
+
+.skill-fill.learning {
+  background: linear-gradient(90deg, #f5a949, #ffd06d);
+}
+
+/* 链接按钮 */
+.about-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.about-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: var(--theme-color, #49b1f5);
+  color: #fff !important;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.about-links a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(73, 177, 245, 0.4);
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .skill-card {
+  background: rgba(73, 177, 245, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .skill-bar {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 600px) {
+  .about-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+}
