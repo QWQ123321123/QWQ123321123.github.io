@@ -45,3 +45,12 @@
   position: relative;
   z-index: 1;
 }
+
+/* 修复：≥2000px 宽屏下主题 CSS 会把瀑布流改成 3 列，
+   但 JS 布局库按 2 列摆放，导致中间出现大片空白。
+   强制宽屏也保持 2 列，与 JS 测量结果一致。 */
+@media (min-width: 2000px) {
+  #recent-posts .recent-post-item {
+    width: calc(100% / 2 - 8px) !important;
+  }
+}
